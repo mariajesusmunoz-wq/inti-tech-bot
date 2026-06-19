@@ -1,0 +1,6 @@
+node_modules
+credentials.json
+sent_leads.json
+processed_ids.json
+.wwebjs_auth
+*.pdf
