@@ -3,4 +3,6 @@ credentials.json
 sent_leads.json
 processed_ids.json
 .wwebjs_auth
+.wwebjs_cache
+.DS_Store
 *.pdf
