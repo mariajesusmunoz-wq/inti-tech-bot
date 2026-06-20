@@ -301,10 +301,8 @@ async function main() {
     });
 
     client.on('ready', async () => {
-        console.log('✅ Bot conectado! Esperando 70s para guardar sesión en MongoDB...');
-        await new Promise(r => setTimeout(r, 70000));
-        console.log('▶️  Iniciando procesamiento de leads...');
-        await processBacklog();
+        console.log('✅ Bot conectado! Iniciando en 5s...');
+        await new Promise(r => setTimeout(r, 5000));
         await checkAndSendLeads();
         setInterval(checkAndSendLeads, CHECK_INTERVAL);
     });
