@@ -266,10 +266,6 @@ async function main() {
                         await new Promise(r => setTimeout(r, 3000));
                     } catch (err) {
                         console.error(`❌ Error con ${name}: ${err.message}`);
-                        if (err.message.includes('detached Frame') || err.message.includes('Session closed') || err.message.includes('Target closed')) {
-                            console.log('⚠️ Sesión caída, reiniciando proceso...');
-                            process.exit(1);
-                        }
                     }
                 }
             } catch (err) {
@@ -290,8 +286,14 @@ async function main() {
         client.initialize();
     });
 
+    client.on('remote_session_saved', () => {
+        console.log('✅ Sesión guardada en MongoDB!');
+    });
+
     client.on('ready', async () => {
-        console.log('✅ Bot conectado! Revisando leads cada 5 minutos...');
+        console.log('✅ Bot conectado! Esperando 70s para guardar sesión en MongoDB...');
+        await new Promise(r => setTimeout(r, 70000));
+        console.log('▶️  Iniciando procesamiento de leads...');
         await processBacklog();
         await checkAndSendLeads();
         setInterval(checkAndSendLeads, CHECK_INTERVAL);
