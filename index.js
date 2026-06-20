@@ -1,5 +1,4 @@
-const { Client, RemoteAuth, MessageMedia } = require('whatsapp-web.js');
-const { MongoStore } = require('wwebjs-mongo');
+const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const mongoose = require('mongoose');
 const qrcode = require('qrcode-terminal');
 const QRCode = require('qrcode');
@@ -7,15 +6,6 @@ const http = require('http');
 const { google } = require('googleapis');
 const path = require('path');
 const fs = require('fs');
-
-process.on('uncaughtException', (err) => {
-    if (err.message && err.message.includes('RemoteAuth.zip')) {
-        console.log('⚠️ Error de backup de sesión (ignorado, bot sigue corriendo):', err.message);
-        return;
-    }
-    console.error('💥 Error no manejado:', err);
-    process.exit(1);
-});
 
 let currentQR = null;
 const PORT = process.env.PORT || 3000;
@@ -153,13 +143,9 @@ async function main() {
 
     await loadSentLeads();
 
-    const store = new MongoStore({ mongoose });
-
     const client = new Client({
-        authStrategy: new RemoteAuth({
-            store,
-            dataPath: '/tmp/.wwebjs_auth',
-            backupSyncIntervalMs: 60000
+        authStrategy: new LocalAuth({
+            dataPath: '/data'
         }),
         puppeteer: {
             executablePath: process.env.CHROMIUM_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
@@ -295,10 +281,6 @@ async function main() {
         client.initialize();
     });
 
-    client.on('remote_session_saved', () => {
-        console.log('✅ Sesión guardada en MongoDB!');
-    });
-
     client.on('ready', async () => {
         console.log('✅ Bot conectado! Iniciando en 5s...');
         await new Promise(r => setTimeout(r, 5000));
@@ -352,8 +334,5 @@ async function main() {
 
     client.initialize();
 }
-
-// Use /tmp as CWD so RemoteAuth can write its zip file
-process.chdir('/tmp');
 
 main().catch(console.error);
