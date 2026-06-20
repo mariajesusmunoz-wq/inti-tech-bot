@@ -161,7 +161,7 @@ async function main() {
 
                 if (texto === '1' || texto.includes('catálogo') || texto.includes('catalogo')) {
                     try {
-                        const media = MessageMedia.fromFilePath(path.join(__dirname, 'catalogo.pdf'));
+                        const media = MessageMedia.fromFilePath(path.join(__dirname, 'Catalogo.pdf'));
                         await client.sendMessage(chatId, media, { caption: '¡Aquí está nuestro catálogo! Si tienes alguna pregunta, con gusto te ayudo. 🌞' });
                         await updateEstado(lead.spreadsheetId, lead.rowIndex, lead.statusCol, 'catálogo');
                         console.log(`📄 Catálogo enviado (backlog) a ${lead.name}`);
@@ -284,7 +284,7 @@ async function main() {
 
         if (texto === '1' || texto.includes('catálogo') || texto.includes('catalogo')) {
             try {
-                const media = MessageMedia.fromFilePath(path.join(__dirname, 'catalogo.pdf'));
+                const media = MessageMedia.fromFilePath(path.join(__dirname, 'Catalogo.pdf'));
                 await client.sendMessage(msg.from, media, { caption: '¡Aquí está nuestro catálogo! Si tienes alguna pregunta, con gusto te ayudo. 🌞' });
                 await updateEstado(lead.spreadsheetId, lead.rowIndex, lead.statusCol, 'catálogo');
                 console.log(`📄 Catálogo enviado a ${lead.name}`);
