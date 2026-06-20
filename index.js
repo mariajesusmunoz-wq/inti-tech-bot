@@ -131,7 +131,7 @@ async function main() {
     const client = new Client({
         authStrategy: new RemoteAuth({
             store,
-            backupSyncIntervalMs: 300000
+            backupSyncIntervalMs: 60000
         }),
         puppeteer: {
             executablePath: process.env.CHROMIUM_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
