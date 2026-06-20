@@ -164,6 +164,7 @@ async function main() {
         puppeteer: {
             executablePath: process.env.CHROMIUM_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
             headless: true,
+            protocolTimeout: 120000,
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox',
@@ -355,5 +356,8 @@ async function main() {
 
     client.initialize();
 }
+
+// Use /tmp as CWD so RemoteAuth can write its zip file
+process.chdir('/tmp');
 
 main().catch(console.error);
