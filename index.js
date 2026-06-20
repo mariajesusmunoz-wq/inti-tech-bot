@@ -170,7 +170,7 @@ async function main() {
                 '--disable-dev-shm-usage',
                 '--disable-gpu',
                 '--no-first-run',
-                '--single-process',
+                '--renderer-process-limit=1',
                 '--disable-extensions',
                 '--disable-background-networking',
                 '--disable-default-apps',
@@ -181,7 +181,6 @@ async function main() {
                 '--safebrowsing-disable-auto-update',
                 '--disable-client-side-phishing-detection',
                 '--disable-hang-monitor',
-                '--js-flags=--max-old-space-size=128',
             ]
         }
     });
