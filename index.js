@@ -201,8 +201,7 @@ async function main() {
 
                 if (texto === '1' || texto.includes('catálogo') || texto.includes('catalogo')) {
                     try {
-                        const media = MessageMedia.fromFilePath(path.join(__dirname, 'Catalogo.pdf'));
-                        await client.sendMessage(chatId, media, { caption: '¡Aquí está nuestro catálogo! Si tienes alguna pregunta, con gusto te ayudo. 🌞' });
+                        await client.sendMessage(chatId, '¡Aquí está nuestro catálogo! 📋✨\nhttps://docs.google.com/presentation/d/10jAiFCMcikBRoWPFzFBa5R7WsCjiVGHN4y19vSh8gvY\n\nSi tienes alguna pregunta, con gusto te ayudo. 🌞');
                         await updateEstado(lead.spreadsheetId, lead.rowIndex, lead.statusCol, 'catálogo');
                         console.log(`📄 Catálogo enviado (backlog) a ${lead.name}`);
                     } catch (err) {
@@ -326,8 +325,7 @@ async function main() {
 
         if (texto === '1' || texto.includes('catálogo') || texto.includes('catalogo')) {
             try {
-                const media = MessageMedia.fromFilePath(path.join(__dirname, 'Catalogo.pdf'));
-                await client.sendMessage(msg.from, media, { caption: '¡Aquí está nuestro catálogo! Si tienes alguna pregunta, con gusto te ayudo. 🌞' });
+                await client.sendMessage(msg.from, '¡Aquí está nuestro catálogo! 📋✨\nhttps://docs.google.com/presentation/d/10jAiFCMcikBRoWPFzFBa5R7WsCjiVGHN4y19vSh8gvY\n\nSi tienes alguna pregunta, con gusto te ayudo. 🌞');
                 await updateEstado(lead.spreadsheetId, lead.rowIndex, lead.statusCol, 'catálogo');
                 console.log(`📄 Catálogo enviado a ${lead.name}`);
             } catch (err) {
