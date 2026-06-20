@@ -8,6 +8,15 @@ const { google } = require('googleapis');
 const path = require('path');
 const fs = require('fs');
 
+process.on('uncaughtException', (err) => {
+    if (err.message && err.message.includes('RemoteAuth.zip')) {
+        console.log('⚠️ Error de backup de sesión (ignorado, bot sigue corriendo):', err.message);
+        return;
+    }
+    console.error('💥 Error no manejado:', err);
+    process.exit(1);
+});
+
 let currentQR = null;
 const PORT = process.env.PORT || 3000;
 http.createServer(async (req, res) => {
@@ -149,6 +158,7 @@ async function main() {
     const client = new Client({
         authStrategy: new RemoteAuth({
             store,
+            dataPath: '/tmp/.wwebjs_auth',
             backupSyncIntervalMs: 60000
         }),
         puppeteer: {
