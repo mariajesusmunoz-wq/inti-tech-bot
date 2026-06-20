@@ -160,6 +160,18 @@ async function main() {
                 '--disable-dev-shm-usage',
                 '--disable-gpu',
                 '--no-first-run',
+                '--single-process',
+                '--disable-extensions',
+                '--disable-background-networking',
+                '--disable-default-apps',
+                '--disable-sync',
+                '--disable-translate',
+                '--hide-scrollbars',
+                '--mute-audio',
+                '--safebrowsing-disable-auto-update',
+                '--disable-client-side-phishing-detection',
+                '--disable-hang-monitor',
+                '--js-flags=--max-old-space-size=128',
             ]
         }
     });
