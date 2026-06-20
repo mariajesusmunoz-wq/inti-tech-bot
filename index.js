@@ -2,9 +2,27 @@ const { Client, RemoteAuth, MessageMedia } = require('whatsapp-web.js');
 const { MongoStore } = require('wwebjs-mongo');
 const mongoose = require('mongoose');
 const qrcode = require('qrcode-terminal');
+const QRCode = require('qrcode');
+const http = require('http');
 const { google } = require('googleapis');
 const path = require('path');
 const fs = require('fs');
+
+let currentQR = null;
+const PORT = process.env.PORT || 3000;
+http.createServer(async (req, res) => {
+    if (req.url === '/qr' && currentQR) {
+        const img = await QRCode.toBuffer(currentQR, { scale: 8 });
+        res.writeHead(200, { 'Content-Type': 'image/png' });
+        res.end(img);
+    } else if (req.url === '/qr') {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end('<h2>QR no disponible aún. Espera unos segundos y recarga.</h2>');
+    } else {
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end('Bot corriendo. Ve a /qr para escanear el código.');
+    }
+}).listen(PORT, () => console.log(`🌐 Servidor QR en puerto ${PORT}`));
 
 const SPREADSHEET_IDS = [
     '1w4i5PkXzKBfsmijn6f3mW8z7aPXrH52dDitJPA2PIh8',
@@ -249,7 +267,9 @@ async function main() {
     }
 
     client.on('qr', (qr) => {
+        currentQR = qr;
         console.log('Escanea este QR con tu WhatsApp Business:');
+        console.log('👉 Abre tu URL de Railway + /qr en el navegador para ver el QR como imagen');
         qrcode.generate(qr, { small: true });
     });
 
