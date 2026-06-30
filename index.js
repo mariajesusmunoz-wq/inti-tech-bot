@@ -351,7 +351,23 @@ async function main() {
         }
     });
 
+    cleanChromeLocks('/data');
     client.initialize();
+}
+
+function cleanChromeLocks(dir) {
+    try {
+        const entries = fs.readdirSync(dir, { withFileTypes: true });
+        for (const entry of entries) {
+            const fullPath = path.join(dir, entry.name);
+            if (entry.isDirectory()) {
+                cleanChromeLocks(fullPath);
+            } else if (['SingletonLock', 'SingletonCookie', 'SingletonSocket'].includes(entry.name)) {
+                fs.unlinkSync(fullPath);
+                console.log(`🔓 Lock eliminado: ${fullPath}`);
+            }
+        }
+    } catch (_) {}
 }
 
 main().catch(console.error);
