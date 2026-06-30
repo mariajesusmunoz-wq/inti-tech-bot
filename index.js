@@ -170,6 +170,7 @@ async function main() {
                 '--disable-client-side-phishing-detection',
                 '--disable-hang-monitor',
                 '--disable-accelerated-2d-canvas',
+                '--single-process',
                 '--js-flags=--max_old_space_size=256',
             ]
         }
@@ -297,7 +298,6 @@ async function main() {
     client.on('ready', async () => {
         console.log('✅ Bot conectado! Iniciando en 5s...');
         await new Promise(r => setTimeout(r, 5000));
-        await processBacklog();
         await checkAndSendLeads();
         setInterval(checkAndSendLeads, CHECK_INTERVAL);
         setInterval(processBacklog, CHECK_INTERVAL * 3);
