@@ -157,6 +157,7 @@ async function main() {
                 '--disable-dev-shm-usage',
                 '--disable-gpu',
                 '--no-first-run',
+                '--no-zygote',
                 '--renderer-process-limit=1',
                 '--disable-extensions',
                 '--disable-background-networking',
@@ -168,6 +169,8 @@ async function main() {
                 '--safebrowsing-disable-auto-update',
                 '--disable-client-side-phishing-detection',
                 '--disable-hang-monitor',
+                '--disable-accelerated-2d-canvas',
+                '--js-flags=--max_old_space_size=256',
             ]
         }
     });
@@ -175,9 +178,10 @@ async function main() {
     async function processBacklog() {
         console.log('📬 Revisando respuestas pendientes de leads anteriores...');
         for (const [chatId, lead] of Object.entries(sentLeads)) {
+            await new Promise(r => setTimeout(r, 3000));
             try {
                 const chat = await client.getChatById(chatId);
-                const messages = await chat.fetchMessages({ limit: 20 });
+                const messages = await chat.fetchMessages({ limit: 5 });
 
                 const lastReply = messages.reverse().find(m => !m.fromMe);
                 if (!lastReply) continue;
@@ -219,14 +223,19 @@ async function main() {
         console.log('✅ Backlog procesado.');
     }
 
+    const BATCH_SIZE = 10;
+
     async function checkAndSendLeads() {
         console.log('🔍 Revisando nuevos leads...');
         for (const spreadsheetId of SPREADSHEET_IDS) {
             try {
                 const leads = await getNewLeads(spreadsheetId);
-                console.log(`📋 ${leads.length} leads sin contactar en sheet ${spreadsheetId.slice(0, 8)}...`);
+                const batch = leads.slice(0, BATCH_SIZE);
+                console.log(`📋 ${leads.length} leads sin contactar en sheet ${spreadsheetId.slice(0, 8)}... (procesando ${batch.length})`);
 
-                for (const lead of leads) {
+                for (const lead of batch) {
+                    await new Promise(r => setTimeout(r, 3000));
+
                     const name = lead['full name'] || 'estimado/a';
                     const phone = formatPhone(lead['phone'] || lead['Teléfono del Cliente']);
                     if (!phone) {
@@ -284,8 +293,10 @@ async function main() {
     client.on('ready', async () => {
         console.log('✅ Bot conectado! Iniciando en 5s...');
         await new Promise(r => setTimeout(r, 5000));
+        await processBacklog();
         await checkAndSendLeads();
         setInterval(checkAndSendLeads, CHECK_INTERVAL);
+        setInterval(processBacklog, CHECK_INTERVAL * 3);
     });
 
     client.on('message', async (msg) => {
