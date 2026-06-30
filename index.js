@@ -193,6 +193,8 @@ async function main() {
                     try {
                         await client.sendMessage(chatId, '¡Aquí está nuestro catálogo! 📋✨\nhttps://docs.google.com/presentation/d/10jAiFCMcikBRoWPFzFBa5R7WsCjiVGHN4y19vSh8gvY\n\nSi tienes alguna pregunta, con gusto te ayudo. 🌞');
                         await updateEstado(lead.spreadsheetId, lead.rowIndex, lead.statusCol, 'catálogo');
+                        delete sentLeads[chatId];
+                        await saveSentLeads();
                         console.log(`📄 Catálogo enviado (backlog) a ${lead.name}`);
                     } catch (err) {
                         console.error(`❌ Error enviando catálogo a ${lead.name}: ${err.message}`);
@@ -209,6 +211,8 @@ async function main() {
                     await client.sendMessage(chatId, 'Perfecto, un representante de Inti Tech se pondrá en contacto contigo a la brevedad. ¡Muchas gracias por tu interés! 🌞');
                     await updateEstado(lead.spreadsheetId, lead.rowIndex, lead.statusCol, 'representante');
                     await client.sendMessage('18638453737@c.us', `MENSAJE DEL BOT: ${lead.name} quiere hablar con un representante. Número: ${chatId.replace('@c.us', '').replace('@lid', '')}`);
+                    delete sentLeads[chatId];
+                    await saveSentLeads();
                     console.log(`👤 Representante solicitado (backlog) por ${lead.name}`);
 
                 } else {
@@ -310,7 +314,7 @@ async function main() {
         if (lead.waitingForDetails) {
             await msg.reply('Gracias por los detalles. Un representante de Inti Tech te enviará la cotización a la brevedad. 🌞');
             await updateEstado(lead.spreadsheetId, lead.rowIndex, lead.statusCol, 'cotización recibida');
-            lead.waitingForDetails = false;
+            delete sentLeads[msg.from];
             await saveSentLeads();
             console.log(`📋 Detalles de cotización recibidos de ${lead.name}`);
             return;
@@ -320,6 +324,8 @@ async function main() {
             try {
                 await client.sendMessage(msg.from, '¡Aquí está nuestro catálogo! 📋✨\nhttps://docs.google.com/presentation/d/10jAiFCMcikBRoWPFzFBa5R7WsCjiVGHN4y19vSh8gvY\n\nSi tienes alguna pregunta, con gusto te ayudo. 🌞');
                 await updateEstado(lead.spreadsheetId, lead.rowIndex, lead.statusCol, 'catálogo');
+                delete sentLeads[msg.from];
+                await saveSentLeads();
                 console.log(`📄 Catálogo enviado a ${lead.name}`);
             } catch (err) {
                 console.error(`❌ Error enviando catálogo: ${err.message}`);
@@ -336,6 +342,8 @@ async function main() {
             await msg.reply('Perfecto, un representante de Inti Tech se pondrá en contacto contigo a la brevedad. ¡Muchas gracias por tu interés! 🌞');
             await updateEstado(lead.spreadsheetId, lead.rowIndex, lead.statusCol, 'representante');
             await client.sendMessage('18638453737@c.us', `MENSAJE DEL BOT: ${lead.name} quiere hablar con un representante. Número: ${msg.from.replace('@c.us', '')}`);
+            delete sentLeads[msg.from];
+            await saveSentLeads();
             console.log(`👤 Representante solicitado por ${lead.name}`);
 
         } else {
